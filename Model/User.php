@@ -28,6 +28,12 @@ class User extends UsersAppModel {
 	public $name = 'User';
 
 /**
+ * UseTable デフォルトのAuth用テーブル
+ * @var string
+ */
+public $useTable = 'users';
+
+/**
  * Additional Find methods
  *
  * @var array
@@ -118,6 +124,14 @@ class User extends UsersAppModel {
  * @param string $ds Datasource
  */
 	public function __construct($id = false, $table = null, $ds = null) {
+		
+		//認証テーブルがusersテーブル以外に指定されていたらモデルのテーブルを変更する
+		$authTable = Configure::read('Users.authTable');
+		if(isset($authTable) and $authTable != 'users')
+		{
+			$this->useTable = $authTable;	
+		}
+
 		$this->_setupBehaviors();
 		$this->_setupValidation();
 		parent::__construct($id, $table, $ds);
